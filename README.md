@@ -4,9 +4,9 @@
 
 - [Prerequisites](#prerequisites)
 - [Demos](#demos)
-  - [Demo 1: Enforce privileged](#enforce-privileged)
-  - [Demo 2: Migrate to baseline](#migrate-to-baseline)
-  - [Demo 3: Drop all capabilites](#drop-all-capabilities)
+  - [Demo 1: Enforce privileged](#demo-1-enforce-privileged)
+  - [Demo 2: Migrate to baseline](#demo-2-migrate-to-baseline)
+  - [Demo 3: Drop all capabilites](#demo-3-drop-all-capabilities)
 - [Bonus](#bonus)
  
 # Prerequisites
