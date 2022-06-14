@@ -4,9 +4,9 @@
 
 - [Prerequisites](#prerequisites)
 - [Demos](#demos)
- - [Demo 1: Enforce privileged](#enforce-privileged)
- - [Demo 2: Enforce privileged and warn / audit baseline](#enforce-privileged-warn-audit-baseline)
- - [Demo 3: Enforce restricted and try to create a pod with `allowPrivilegeEscalation` set to false](#enforce-privileged-with-allowPrivilegeEscalation-set-to-false)
+  - [Demo 1: Enforce privileged](#enforce-privileged)
+  - [Demo 2: Enforce privileged and warn / audit baseline](#enforce-privileged-warn-audit-baseline)
+  - [Demo 3: Enforce restricted and try to create a pod with `allowPrivilegeEscalation` set to false](#enforce-privileged-with-allowPrivilegeEscalation-set-to-false)
 - [Bonus](#bonus)
  
 # Prerequisites
