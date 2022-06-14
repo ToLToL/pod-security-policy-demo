@@ -5,8 +5,8 @@
 - [Prerequisites](#prerequisites)
 - [Demos](#demos)
   - [Demo 1: Enforce privileged](#enforce-privileged)
-  - [Demo 2: Enforce privileged and warn / audit baseline](#enforce-privileged-warn-audit-baseline)
-  - [Demo 3: Enforce restricted and try to create a pod with `allowPrivilegeEscalation` set to false](#enforce-privileged-with-allowPrivilegeEscalation-set-to-false)
+  - [Demo 2: Migrate to baseline](#migrate-to-baseline)
+  - [Demo 3: Drop all capabilites](#drop-all-capabilities)
 - [Bonus](#bonus)
  
 # Prerequisites
@@ -71,7 +71,7 @@ Error from server (Forbidden): pods "privileged" is forbidden: violates PodSecur
 
 `kubectl delete ns psp-demo`
 
-## Demo 2: Enforce privileged and warn / audit baseline
+## Demo 2: Migrate to baseline
 
 Perfect setup to help your team to migrate all workloads to baseline (recommended).
 
@@ -116,7 +116,7 @@ privileged   0/1     Completed   2 (27s ago)   30s
 
 `kubectl delete ns psp-demo`
 
-## Demo 3: Enforce restricted and try to create a pod with `allowPrivilegeEscalation` set to false
+## Demo 3: Drop all capabilities
 
 ### Create a namespace
 
