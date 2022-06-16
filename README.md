@@ -8,7 +8,6 @@
   - [Demo 2: Migrate to baseline](#demo-2-migrate-to-baseline)
   - [Demo 3: Drop all capabilites](#demo-3-drop-all-capabilities)
   - [Demo 4: Dry run](#demo-4-dry-run)
-- [Bonus](#bonus)
 
 # Prerequisites
 
@@ -27,9 +26,9 @@ A running v1.23+ k8s cluster.
 
 `kubectl create ns psp-demo`
 
-### Label the namespace to enforce the restricted Pod Secury Standard
+### Label the namespace to enforce the restricted Pod Secury Standard and pin a specific version
 
-`kubectl label ns psp-demo pod-security.kubernetes.io/enforce=restricted`
+`kubectl label ns psp-demo pod-security.kubernetes.io/enforce=restricted pod-security.kubernetes.io/enforce-version=v1.22`
 
 ### Display namespace annotations / get namespace yaml file
 
@@ -37,7 +36,7 @@ A running v1.23+ k8s cluster.
 
 ```
 NAME              STATUS   AGE     LABELS
-psp-demo          Active   25m     kubernetes.io/metadata.name=psp-demo,pod-security.kubernetes.io/enforce=restricted
+psp-demo          Active   50s     kubernetes.io/metadata.name=psp-demo,pod-security.kubernetes.io/enforce-version=v1.22,pod-security.kubernetes.io/enforce=restricted
 ```
 
 `kubectl get ns psp-demo -o yaml`
@@ -48,7 +47,8 @@ kind: Namespace
 metadata:
   creationTimestamp: "2022-06-14T18:13:14Z"
   labels:
-    kubernetes.io/metadata.name: psp-demo # <-------------- Got it
+    kubernetes.io/metadata.name: psp-demo # <-- Got it
+    pod-security.kubernetes.io/enforce-version: v1.22 # <-- Got it
     pod-security.kubernetes.io/enforce: restricted
   name: psp-demo
   resourceVersion: "1533940"
@@ -239,9 +239,3 @@ Warning: nginx: privileged
 ### Delete namespace
 
 `kubectl delete ns psp-demo`
-
-## Bonus
-
-### Set a specific version for each Pod Security mode
-
-`pod-security.kubernetes.io/<MODE>-version: <VERSION>`
