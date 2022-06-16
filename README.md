@@ -7,9 +7,11 @@
   - [Demo 1: Enforce privileged](#demo-1-enforce-privileged)
   - [Demo 2: Migrate to baseline](#demo-2-migrate-to-baseline)
   - [Demo 3: Drop all capabilites](#demo-3-drop-all-capabilities)
+  - [Demo 4: Dry run](#demo-4-dry-run)
 - [Bonus](#bonus)
- 
+
 # Prerequisites
+
 Read:
 
 - [Pod Security Admission](https://kubernetes.io/docs/concepts/security/pod-security-admission/)
@@ -17,7 +19,8 @@ Read:
 
 A running v1.23+ k8s cluster.
 
-# Demos 
+# Demos
+
 ## Demo 1: Enforce privileged
 
 ### Create a namespace
@@ -207,6 +210,31 @@ EOF
 ```
 
 The pod should be created
+
+### Delete namespace
+
+`kubectl delete ns psp-demo`
+
+## Demo 4: Dry run
+
+### Create a namespace
+
+`kubectl create ns psp-demo`
+
+### Create a privileged pod
+
+`kubectl run nginx -n psp-demo --image=nginx --privileged`
+
+### Dry run: enforce baseline
+
+`kubectl label ns psp-demo pod-security.kubernetes.io/enforce=baseline --dry-run=server --overwrite`
+
+You should get warning messages:
+
+```
+Warning: existing pods in namespace "psp-demo" violate the new PodSecurity enforce level "baseline:latest"
+Warning: nginx: privileged
+```
 
 ### Delete namespace
 
