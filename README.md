@@ -1,4 +1,4 @@
-# Pod Security Policy demo
+# Pod Security Admission demo
 
 # Table of contents
 
@@ -24,11 +24,11 @@ A running v1.23+ k8s cluster.
 
 ### Create a namespace
 
-`kubectl create ns psp-demo`
+`kubectl create ns psa-demo`
 
 ### Label the namespace to enforce the restricted Pod Secury Standard and pin a specific version
 
-`kubectl label ns psp-demo pod-security.kubernetes.io/enforce=restricted pod-security.kubernetes.io/enforce-version=v1.22`
+`kubectl label ns psa-demo pod-security.kubernetes.io/enforce=restricted pod-security.kubernetes.io/enforce-version=v1.22`
 
 ### Display namespace annotations / get namespace yaml file
 
@@ -36,10 +36,10 @@ A running v1.23+ k8s cluster.
 
 ```
 NAME              STATUS   AGE     LABELS
-psp-demo          Active   50s     kubernetes.io/metadata.name=psp-demo,pod-security.kubernetes.io/enforce-version=v1.22,pod-security.kubernetes.io/enforce=restricted
+psa-demo          Active   50s     kubernetes.io/metadata.name=psa-demo,pod-security.kubernetes.io/enforce-version=v1.22,pod-security.kubernetes.io/enforce=restricted
 ```
 
-`kubectl get ns psp-demo -o yaml`
+`kubectl get ns psa-demo -o yaml`
 
 ```yaml
 apiVersion: v1
@@ -47,10 +47,10 @@ kind: Namespace
 metadata:
   creationTimestamp: "2022-06-14T18:13:14Z"
   labels:
-    kubernetes.io/metadata.name: psp-demo # <-- Got it
+    kubernetes.io/metadata.name: psa-demo # <-- Got it
     pod-security.kubernetes.io/enforce-version: v1.22 # <-- Got it
     pod-security.kubernetes.io/enforce: restricted
-  name: psp-demo
+  name: psa-demo
   resourceVersion: "1533940"
   uid: 4d5be7df-9c6e-4d67-bdbb-166809382a16
 spec:
@@ -62,7 +62,7 @@ status:
 
 ### Dry run pod creation with privileged access
 
-`kubectl run privileged -n psp-demo --dry-run=server --image=busybox --privileged`
+`kubectl run privileged -n psa-demo --dry-run=server --image=busybox --privileged`
 
 Should get an forbidden error:
 
@@ -72,7 +72,7 @@ Error from server (Forbidden): pods "privileged" is forbidden: violates PodSecur
 
 ### Delete namespace
 
-`kubectl delete ns psp-demo`
+`kubectl delete ns psa-demo`
 
 ## Demo 2: Migrate to baseline
 
@@ -80,11 +80,11 @@ Perfect setup to help your team to migrate all workloads to baseline (recommende
 
 ### Create namespace
 
-`kubectl create ns psp-demo`
+`kubectl create ns psa-demo`
 
 ### Label the namespace to enforce privileged and warn / audit baseline the Pod Secury Standard
 
-`kubectl label ns psp-demo pod-security.kubernetes.io/enforce=privileged pod-security.kubernetes.io/warn=baseline pod-security.kubernetes.io/audit=baseline`
+`kubectl label ns psa-demo pod-security.kubernetes.io/enforce=privileged pod-security.kubernetes.io/warn=baseline pod-security.kubernetes.io/audit=baseline`
 
 ### Display namespace annotations / get namespace yaml file
 
@@ -92,12 +92,12 @@ Perfect setup to help your team to migrate all workloads to baseline (recommende
 
 ```
 NAME              STATUS   AGE     LABELS
-psp-demo          Active   17m     kubernetes.io/metadata.name=psp-demo,pod-security.kubernetes.io/audit=baseline,pod-security.kubernetes.io/enforce=privileged,pod-security.kubernetes.io/warn=baseline
+psa-demo          Active   17m     kubernetes.io/metadata.name=psa-demo,pod-security.kubernetes.io/audit=baseline,pod-security.kubernetes.io/enforce=privileged,pod-security.kubernetes.io/warn=baseline
 ```
 
 ### Create a pod with privileged access
 
-`kubectl run privileged -n psp-demo --image=busybox --privileged`
+`kubectl run privileged -n psa-demo --image=busybox --privileged`
 
 Should get:
 
@@ -108,7 +108,7 @@ pod/privileged created
 
 The pod created with just a warning message.
 
-`kubectl get po -n psp-demo`
+`kubectl get po -n psa-demo`
 
 ```
 NAME         READY   STATUS      RESTARTS      AGE
@@ -117,17 +117,17 @@ privileged   0/1     Completed   2 (27s ago)   30s
 
 ### Delete namespace
 
-`kubectl delete ns psp-demo`
+`kubectl delete ns psa-demo`
 
 ## Demo 3: Drop all capabilities
 
 ### Create a namespace
 
-`kubectl create ns psp-demo`
+`kubectl create ns psa-demo`
 
 ### Label the namespace to enforce the restricted Pod Secury Standard
 
-`kubectl label ns psp-demo pod-security.kubernetes.io/enforce=restricted`
+`kubectl label ns psa-demo pod-security.kubernetes.io/enforce=restricted`
 
 ### Display namespace annotations / get namespace yaml file
 
@@ -135,7 +135,7 @@ privileged   0/1     Completed   2 (27s ago)   30s
 
 ```
 NAME              STATUS   AGE     LABELS
-psp-demo          Active   25m     kubernetes.io/metadata.name=psp-demo,pod-security.kubernetes.io/enforce=restricted
+psa-demo          Active   25m     kubernetes.io/metadata.name=psa-demo,pod-security.kubernetes.io/enforce=restricted
 ```
 
 ### Try to create a pod with `allowPrivilegeEscalation` set to false
@@ -149,7 +149,7 @@ metadata:
   labels:
     run: notprivileged
   name: notprivileged
-  namespace: psp-demo
+  namespace: psa-demo
 spec:
   containers:
   - image: busybox
@@ -186,7 +186,7 @@ metadata:
   labels:
     run: notprivileged
   name: notprivileged
-  namespace: psp-demo
+  namespace: psa-demo
 spec:
   containers:
   - image: busybox
@@ -213,29 +213,29 @@ The pod should be created
 
 ### Delete namespace
 
-`kubectl delete ns psp-demo`
+`kubectl delete ns psa-demo`
 
 ## Demo 4: Dry run
 
 ### Create a namespace
 
-`kubectl create ns psp-demo`
+`kubectl create ns psa-demo`
 
 ### Create a privileged pod
 
-`kubectl run nginx -n psp-demo --image=nginx --privileged`
+`kubectl run nginx -n psa-demo --image=nginx --privileged`
 
 ### Dry run: enforce baseline
 
-`kubectl label ns psp-demo pod-security.kubernetes.io/enforce=baseline --dry-run=server --overwrite`
+`kubectl label ns psa-demo pod-security.kubernetes.io/enforce=baseline --dry-run=server --overwrite`
 
 You should get warning messages:
 
 ```
-Warning: existing pods in namespace "psp-demo" violate the new PodSecurity enforce level "baseline:latest"
+Warning: existing pods in namespace "psa-demo" violate the new PodSecurity enforce level "baseline:latest"
 Warning: nginx: privileged
 ```
 
 ### Delete namespace
 
-`kubectl delete ns psp-demo`
+`kubectl delete ns psa-demo`
